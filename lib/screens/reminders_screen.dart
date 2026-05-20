@@ -257,6 +257,8 @@ class _RemindersScreenState extends State<RemindersScreen> {
                                         Text(
                                           bill.name,
                                           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                         const SizedBox(height: 4),
                                         Text(

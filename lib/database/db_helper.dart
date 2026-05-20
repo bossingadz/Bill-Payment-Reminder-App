@@ -189,4 +189,101 @@ class DBHelper {
     _notifyLocalBillsChanged();
     return result;
   }
+
+  Future<List<Bill>> filterBills({
+    String? categoryId,
+    bool? isPaid,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    final allBills = await getBills();
+    
+    return allBills.where((bill) {
+      if (categoryId != null && bill.categoryId != categoryId) return false;
+      
+      if (isPaid != null) {
+        final billIsPaid = bill.isPaid == 1;
+        if (billIsPaid != isPaid) return false;
+      }
+      
+      if (startDate != null || endDate != null) {
+        final billDate = DateTime.parse(bill.dueDate);
+        if (startDate != null && billDate.isBefore(startDate)) return false;
+        if (endDate != null && billDate.isAfter(endDate)) return false;
+      }
+      
+      return true;
+    }).toList();
+  }
+
+  Future<Bill?> getLatestBill() async {
+    final bills = await getBills();
+    if (bills.isEmpty) return null;
+    
+    bills.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
+    return bills.first;
+  }
+
+  Future<int> getTotalBillsCount() async {
+    final bills = await getBills();
+    return bills.length;
+  }
+
+  Future<int> getUnpaidBillsCount() async {
+    final bills = await getBills();
+    return bills.where((bill) => bill.isPaid == 0).length;
+  }
+
+  Future<int> getPaidBillsCount() async {
+    final bills = await getBills();
+    return bills.where((bill) => bill.isPaid == 1).length;
+  }
+
+  Future<double> getTotalBillsAmount() async {
+    final bills = await getBills();
+    double total = 0.0;
+    for (var bill in bills) {
+      total += bill.amount;
+    }
+    return total;
+  }
+
+  Future<double> getUnpaidBillsAmount() async {
+    final bills = await getBills();
+    double total = 0.0;
+    for (var bill in bills.where((bill) => bill.isPaid == 0)) {
+      total += bill.amount;
+    }
+    return total;
+  }
+
+  Future<Map<String, dynamic>> getBillsStats() async {
+    final bills = await getBills();
+    final unpaidBills = bills.where((bill) => bill.isPaid == 0).toList();
+    final paidBills = bills.where((bill) => bill.isPaid == 1).toList();
+
+    double totalAmount = 0.0;
+    for (var bill in bills) {
+      totalAmount += bill.amount;
+    }
+
+    double unpaidAmount = 0.0;
+    for (var bill in unpaidBills) {
+      unpaidAmount += bill.amount;
+    }
+
+    double paidAmount = 0.0;
+    for (var bill in paidBills) {
+      paidAmount += bill.amount;
+    }
+
+    return {
+      'totalCount': bills.length,
+      'unpaidCount': unpaidBills.length,
+      'paidCount': paidBills.length,
+      'totalAmount': totalAmount,
+      'unpaidAmount': unpaidAmount,
+      'paidAmount': paidAmount,
+    };
+  }
 }

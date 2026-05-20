@@ -143,6 +143,7 @@ class _AddBillScreenState extends State<AddBillScreen> {
       final reminderDate = selectedDate.subtract(Duration(days: reminderDays));
       if (preferences.dueReminders && reminderDate.isAfter(DateTime.now())) {
         NotificationService.scheduleNotification(
+          id: bill.id?.toInt() ?? DateTime.now().microsecondsSinceEpoch ~/ 1000,
           title: 'Bill Reminder',
           body: '$name is due in $reminderDays day${reminderDays == 1 ? '' : 's'}!',
           scheduledDate: reminderDate,
@@ -159,7 +160,6 @@ class _AddBillScreenState extends State<AddBillScreen> {
       }
     } catch (e) {
       if (!mounted) return;
-      print('Error saving bill: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to save bill: $e')),
       );

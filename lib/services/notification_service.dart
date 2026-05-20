@@ -16,9 +16,19 @@ class NotificationService {
         InitializationSettings(android: androidSettings);
 
     await notificationsPlugin.initialize(settings);
+    await _requestAndroidPermissions();
+  }
+
+  static Future<void> _requestAndroidPermissions() async {
+    final androidPlugin = notificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidPlugin?.requestNotificationsPermission();
+    await androidPlugin?.requestExactAlarmsPermission();
   }
 
   static Future scheduleNotification({
+    required int id,
     required String title,
     required String body,
     required DateTime scheduledDate,
@@ -27,7 +37,7 @@ class NotificationService {
         tz.TZDateTime.from(scheduledDate, tz.local);
 
     await notificationsPlugin.zonedSchedule(
-      0,
+      id,
       title,
       body,
       scheduledTime,
