@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "845951737357",
+    "project_id": "bill-payment-58375",
+    "storage_bucket": "bill-payment-58375.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845951737357:android:e51ca3a4acbcb99809ff44",
+        "android_client_info": {
+          "package_name": "Bill.payment.reminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVNUr9jEi2yh4mr-C3Q2EytJsw5ZR0GDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
